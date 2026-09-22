@@ -2,18 +2,18 @@ namespace Restaurant.Rabais;
 
 public class CalculateurFacture
 {
-    public decimal CalculerTotal(decimal sousTotal, string typeRabais)
+    private IStrategieRabais strategieRabais;
+
+
+    public CalculateurFacture(IStrategieRabais strategieRabais)
     {
-        if (typeRabais == "fidelite")
-        {
-            return sousTotal * 0.90m;
-        }
+        ArgumentNullException.ThrowIfNull(strategieRabais, nameof(strategieRabais));
+        this.strategieRabais = strategieRabais;
+    }
 
-        if (typeRabais == "fixe")
-        {
-            return Math.Max(0m, sousTotal - 5m);
-        }
-
-        return sousTotal;
+    public decimal CalculerTotal(decimal sousTotal)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(sousTotal, 0, nameof(sousTotal));
+        return this.strategieRabais.CalculerRabais(sousTotal);
     }
 }
